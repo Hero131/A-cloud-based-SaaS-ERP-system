@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+(it's a ongoing project btw 🦆)
 # Cloud-Based ERP Application
 
 A modern Enterprise Resource Planning (ERP) system built with Node.js, Express, and PostgreSQL, featuring a React frontend.
