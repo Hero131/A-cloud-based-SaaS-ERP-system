@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Cloud-Based ERP Application
 
 A modern Enterprise Resource Planning (ERP) system built with Node.js, Express, and PostgreSQL, featuring a React frontend.
@@ -103,3 +104,6 @@ FRONTEND_URL=http://localhost:3000
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details. 
+=======
+# A-cloud-based-SaaS-ERP-system
+>>>>>>> 4a84b6d2f59ac683c6f983f0be3fa51fdeb3e0b9
