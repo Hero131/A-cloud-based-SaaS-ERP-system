@@ -7,17 +7,14 @@ exports.getAllUsers = async (req, res, next) => {
     const { branchId, role, search } = req.query;
     const where = {};
 
-    // Filter by branch
     if (branchId) {
       where.branchId = branchId;
     }
 
-    // Filter by role
     if (role) {
       where.role = role;
     }
 
-    // Search by name or email
     if (search) {
       where[Op.or] = [
         { firstName: { [Op.iLike]: `%${search}%` } },
@@ -76,13 +73,11 @@ exports.createUser = async (req, res, next) => {
   try {
     const { firstName, lastName, email, password, branchId, role } = req.body;
 
-    // Check if user already exists
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
       return next(new AppError('Email already in use', 400));
     }
 
-    // Check if branch exists
     const branch = await Branch.findByPk(branchId);
     if (!branch) {
       return next(new AppError('Branch not found', 404));
@@ -97,7 +92,6 @@ exports.createUser = async (req, res, next) => {
       role: role || 'sales_executive'
     });
 
-    // Remove password from output
     user.password = undefined;
 
     res.status(201).json({
@@ -120,7 +114,6 @@ exports.updateUser = async (req, res, next) => {
       return next(new AppError('No user found with that ID', 404));
     }
 
-    // Check if email is being changed and is already in use
     if (email && email !== user.email) {
       const existingUser = await User.findOne({ where: { email } });
       if (existingUser) {
@@ -128,7 +121,6 @@ exports.updateUser = async (req, res, next) => {
       }
     }
 
-    // Check if branch exists if being changed
     if (branchId && branchId !== user.branchId) {
       const branch = await Branch.findByPk(branchId);
       if (!branch) {
@@ -136,7 +128,6 @@ exports.updateUser = async (req, res, next) => {
       }
     }
 
-    // Update user
     await user.update({
       firstName: firstName || user.firstName,
       lastName: lastName || user.lastName,
@@ -146,7 +137,6 @@ exports.updateUser = async (req, res, next) => {
       isActive: isActive !== undefined ? isActive : user.isActive
     });
 
-    // Remove password from output
     user.password = undefined;
 
     res.status(200).json({
@@ -168,7 +158,6 @@ exports.deleteUser = async (req, res, next) => {
       return next(new AppError('No user found with that ID', 404));
     }
 
-    // Soft delete by setting isActive to false
     await user.update({ isActive: false });
 
     res.status(204).json({
@@ -206,7 +195,6 @@ exports.updateCurrentUser = async (req, res, next) => {
     const { firstName, lastName, email } = req.body;
     const user = await User.findByPk(req.user.id);
 
-    // Check if email is being changed and is already in use
     if (email && email !== user.email) {
       const existingUser = await User.findOne({ where: { email } });
       if (existingUser) {
@@ -214,14 +202,12 @@ exports.updateCurrentUser = async (req, res, next) => {
       }
     }
 
-    // Update user
     await user.update({
       firstName: firstName || user.firstName,
       lastName: lastName || user.lastName,
       email: email || user.email
     });
 
-    // Remove password from output
     user.password = undefined;
 
     res.status(200).json({
