@@ -7,12 +7,10 @@ exports.getAllBranches = async (req, res, next) => {
     const { search, isActive } = req.query;
     const where = {};
 
-    // Filter by active status
     if (isActive !== undefined) {
       where.isActive = isActive === 'true';
     }
 
-    // Search by name, code, or city
     if (search) {
       where[Op.or] = [
         { name: { [Op.iLike]: `%${search}%` } },
@@ -86,13 +84,11 @@ exports.createBranch = async (req, res, next) => {
       closingTime
     } = req.body;
 
-    // Check if branch code already exists
     const existingBranch = await Branch.findOne({ where: { code } });
     if (existingBranch) {
       return next(new AppError('Branch code already in use', 400));
     }
 
-    // Check if GSTIN already exists
     const existingGSTIN = await Branch.findOne({ where: { gstin } });
     if (existingGSTIN) {
       return next(new AppError('GSTIN already in use', 400));
@@ -149,7 +145,6 @@ exports.updateBranch = async (req, res, next) => {
       return next(new AppError('No branch found with that ID', 404));
     }
 
-    // Check if code is being changed and is already in use
     if (code && code !== branch.code) {
       const existingBranch = await Branch.findOne({ where: { code } });
       if (existingBranch) {
@@ -157,7 +152,6 @@ exports.updateBranch = async (req, res, next) => {
       }
     }
 
-    // Check if GSTIN is being changed and is already in use
     if (gstin && gstin !== branch.gstin) {
       const existingGSTIN = await Branch.findOne({ where: { gstin } });
       if (existingGSTIN) {
@@ -165,7 +159,6 @@ exports.updateBranch = async (req, res, next) => {
       }
     }
 
-    // Update branch
     await branch.update({
       name: name || branch.name,
       code: code || branch.code,
@@ -201,7 +194,6 @@ exports.deleteBranch = async (req, res, next) => {
       return next(new AppError('No branch found with that ID', 404));
     }
 
-    // Check if branch has active users
     const activeUsers = await User.count({
       where: {
         branchId: branch.id,
@@ -213,7 +205,6 @@ exports.deleteBranch = async (req, res, next) => {
       return next(new AppError('Cannot delete branch with active users', 400));
     }
 
-    // Check if branch has products
     const products = await Product.count({
       where: {
         branchId: branch.id
@@ -224,7 +215,6 @@ exports.deleteBranch = async (req, res, next) => {
       return next(new AppError('Cannot delete branch with existing products', 400));
     }
 
-    // Soft delete by setting isActive to false
     await branch.update({ isActive: false });
 
     res.status(204).json({
@@ -244,7 +234,6 @@ exports.getBranchStats = async (req, res, next) => {
       return next(new AppError('No branch found with that ID', 404));
     }
 
-    // Get counts
     const userCount = await User.count({
       where: {
         branchId: branch.id,
