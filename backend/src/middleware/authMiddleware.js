@@ -1,10 +1,9 @@
 const jwt = require('jsonwebtoken');
 const { promisify } = require('util');
 
-// Protect routes - verify JWT token
 exports.protect = async (req, res, next) => {
   try {
-    // 1) Get token from header
+
     let token;
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
       token = req.headers.authorization.split(' ')[1];
@@ -17,13 +16,8 @@ exports.protect = async (req, res, next) => {
       });
     }
 
-    // 2) Verify token
     const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
-    // 3) Check if user still exists
-    // TODO: Add user check from database
-
-    // Grant access to protected route
     req.user = decoded;
     next();
   } catch (err) {
@@ -34,7 +28,6 @@ exports.protect = async (req, res, next) => {
   }
 };
 
-// Restrict access to certain roles
 exports.restrictTo = (...roles) => {
   return (req, res, next) => {
     if (!roles.includes(req.user.role)) {
