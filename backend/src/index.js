@@ -12,13 +12,10 @@ const securityMiddleware = require('./middleware/security');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Security middleware
 app.use(...securityMiddleware);
 
-// Rate limiting
 app.use('/api/', limiter);
 
-// CORS configuration
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
     ? process.env.FRONTEND_URL 
@@ -26,28 +23,23 @@ const corsOptions = {
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
-  maxAge: 86400 // 24 hours
+  maxAge: 86400 
 };
 app.use(cors(corsOptions));
 
-// Middleware
-app.use(express.json({ limit: '10kb' })); // Body limit is 10kb
+app.use(express.json({ limit: '10kb' })); 
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 app.use(morgan('dev'));
 
-// Routes
 app.use('/api', routes);
 
-// Error handling
 app.use(errorHandler);
 
-// Database connection and server start
 async function startServer() {
   try {
     await sequelize.authenticate();
     logger.info('Database connection established successfully.');
     
-    // Sync database models
     await sequelize.sync({ 
       alter: process.env.NODE_ENV === 'development',
       logging: (msg) => logger.debug(msg)
@@ -64,16 +56,14 @@ async function startServer() {
   }
 }
 
-// Handle uncaught exceptions
 process.on('uncaughtException', (err) => {
-  logger.error('UNCAUGHT EXCEPTION! 💥 Shutting down...');
+  logger.error('UNCAUGHT EXCEPTION! Shutting down...');
   logger.error(err.name, err.message);
   process.exit(1);
 });
 
-// Handle unhandled promise rejections
 process.on('unhandledRejection', (err) => {
-  logger.error('UNHANDLED REJECTION! 💥 Shutting down...');
+  logger.error('UNHANDLED REJECTION! Shutting down...');
   logger.error(err.name, err.message);
   process.exit(1);
 });
