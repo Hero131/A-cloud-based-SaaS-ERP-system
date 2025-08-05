@@ -1,7 +1,6 @@
 const express = require('express');
 const router = express.Router();
 
-// Get all users
 router.get('/', (req, res) => {
   res.json({
     success: true,
@@ -12,7 +11,6 @@ router.get('/', (req, res) => {
   });
 });
 
-// Get user by ID
 router.get('/:id', (req, res) => {
   res.json({
     success: true,
@@ -24,7 +22,6 @@ router.get('/:id', (req, res) => {
   });
 });
 
-// Create user
 router.post('/', (req, res) => {
   const { email, name } = req.body;
   res.json({
@@ -34,7 +31,6 @@ router.post('/', (req, res) => {
   });
 });
 
-// Update user
 router.put('/:id', (req, res) => {
   const { email, name } = req.body;
   res.json({
@@ -44,7 +40,6 @@ router.put('/:id', (req, res) => {
   });
 });
 
-// Delete user
 router.delete('/:id', (req, res) => {
   res.json({
     success: true,
