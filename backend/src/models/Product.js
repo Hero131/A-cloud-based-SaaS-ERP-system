@@ -30,11 +30,11 @@ Product.init({
     allowNull: false
   },
   weight: {
-    type: DataTypes.DECIMAL(10, 3), // Weight in grams
+    type: DataTypes.DECIMAL(10, 3),
     allowNull: false
   },
   purity: {
-    type: DataTypes.DECIMAL(5, 2), // Purity percentage
+    type: DataTypes.DECIMAL(5, 2), 
     allowNull: false
   },
   makingCharges: {
@@ -43,7 +43,7 @@ Product.init({
     defaultValue: 0
   },
   basePrice: {
-    type: DataTypes.DECIMAL(12, 2), // Base price per gram
+    type: DataTypes.DECIMAL(12, 2),
     allowNull: false
   },
   sellingPrice: {
